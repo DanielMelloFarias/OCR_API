@@ -21,6 +21,10 @@ def gemini_pro_vision_api(image, prompt="Descreva a img e extraia a informação
     response = model.generate_content([prompt, image])
     return response.text
 
+@app.get("/")
+async def read_root():
+    return {"message": "OI"}
+
 @app.post("/api/url")
 async def analyze_image_url(request: URLRequest):
     response = requests.get(request.url)
