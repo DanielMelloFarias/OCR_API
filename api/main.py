@@ -5,11 +5,23 @@ import io
 import base64
 import requests
 import google.generativeai as genai
+from fastapi.middleware.cors import CORSMiddleware
 
 genai.configure(api_key="AIzaSyD9XWKW-zJa05wr6r3SFCX8EllUDl-w4C8")
 model = genai.GenerativeModel("gemini-1.5-flash")
 
 app = FastAPI()
+
+# Configurar CORS
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class URLRequest(BaseModel):
     url: str
