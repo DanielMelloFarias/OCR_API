@@ -4,14 +4,6 @@ pillow
 requests
 uvicorn
 google-generativeai
-fastapi
-uvicorn
-requests
-vercel_storage
 fastapi-cors
-langchain-community
-langchain_core
-langchain
-langchain-groq
-groq
+
 
