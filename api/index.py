@@ -51,7 +51,7 @@ def process_pdf(pdf_file: UploadFile):
 
     # Espera o arquivo ser processado
     while pdfFile.state.name == "PROCESSING":
-        time.sleep(10)
+        #time.sleep(10)
         pdfFile = genai.get_file(pdfFile.name)
 
     if pdfFile.state.name == "FAILED":
@@ -99,3 +99,34 @@ async def analyze_uploaded_pdf(file: UploadFile = File(...)):
         return {"transcription": transcription}
     except Exception as e:
         return {"error": str(e)}
+    
+
+@app.post("/api/upload_pdf_base64")
+async def analyze_pdf_base64(request: Base64Request):
+    try:
+        # Decodificando o Base64 para binário
+        pdf_data = base64.b64decode(request.base64)
+        
+        # Definindo um nome temporário para o arquivo PDF
+        name = "uploaded_pdf_base64.pdf"
+        path = f"/tmp/{name}"
+
+        # Escrevendo o PDF no sistema de arquivos temporariamente
+        with open(path, "wb") as f:
+            f.write(pdf_data)
+        
+        # Criando um objeto UploadFile para reutilizar a função `process_pdf`
+        class TempFile:
+            filename = name
+            file = open(path, "rb")
+        
+        # Chamando a função de processamento do PDF com o arquivo temporário
+        transcription = process_pdf(TempFile)
+        
+        # Fechar o arquivo temporário
+        TempFile.file.close()
+
+        return {"transcription": transcription}
+    except Exception as e:
+        return {"error": str(e)}
+
