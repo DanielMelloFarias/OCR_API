@@ -51,7 +51,7 @@ def process_pdf(pdf_file: UploadFile):
 
     # Espera o arquivo ser processado
     while pdfFile.state.name == "PROCESSING":
-        time.sleep(10)
+        #time.sleep(10)
         pdfFile = genai.get_file(pdfFile.name)
 
     if pdfFile.state.name == "FAILED":
