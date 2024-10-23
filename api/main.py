@@ -33,13 +33,21 @@ def process_pdf(pdf_file: UploadFile):
     
     path = f"/tmp/{name}"  # Salvar o arquivo temporariamente
     
+    # Salvar o PDF no caminho temporário
     with open(path, "wb") as f:
         f.write(pdf_file.file.read())
     
     try:
+        # Tenta obter o arquivo, caso já esteja carregado
         pdfFile = genai.get_file(f"files/{name}")
     except:
-        pdfFile = genai.upload_file(path=path, name=name, resumable=True)
+        # Define o tipo MIME corretamente
+        mime_type = "application/pdf"
+        print(f"Uploading file with mime_type: {mime_type}")
+        
+        # Realiza o upload com o mime_type definido
+        pdfFile = genai.upload_file(path=path, name=name, mime_type=mime_type, resumable=True)
+        print(f"Completed upload: {pdfFile.uri}")
 
     # Espera o arquivo ser processado
     while pdfFile.state.name == "PROCESSING":
