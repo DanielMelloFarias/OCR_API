@@ -6,6 +6,7 @@ import base64
 import requests
 import google.generativeai as genai
 import time
+import re
 
 # Configure Google Generative AI
 genai.configure(api_key="AIzaSyD9XWKW-zJa05wr6r3SFCX8EllUDl-w4C8")
@@ -25,7 +26,11 @@ def gemini_pro_vision_api(image, prompt="Descreva a img e extraia a informação
 
 # Função para processar PDF
 def process_pdf(pdf_file: UploadFile):
-    name = pdf_file.filename
+    # Convertendo o nome do arquivo para minúsculas e substituindo espaços por traços
+    name = pdf_file.filename.lower()
+    name = re.sub(r'[^a-z0-9-]', '-', name)  # Substituindo caracteres inválidos
+    name = name.strip('-')  # Removendo traços no início ou final
+    
     path = f"/tmp/{name}"  # Salvar o arquivo temporariamente
     
     with open(path, "wb") as f:
